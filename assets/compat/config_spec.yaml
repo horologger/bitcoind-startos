@@ -258,3 +258,14 @@ advanced:
             integral: true
             units: MiB
       default: disabled
+    debugall:
+      type: boolean
+      name: Enable All Debug Logs
+      description: >-
+        Enables all categories of debug logging in Bitcoin Core: net, tor, mempool, http, bench, zmq, walletdb, rpc,
+        estimatefee, addrman, selectcoins, reindex,  cmpctblock,  rand, prune,  proxy,  mempoolrej,  libevent,  coindb,
+        qt, leveldb, validation, i2p, ipc
+
+        This is equivalent to `debug=1` in `bitcoin.conf`
+      nullable: false
+      default: false
