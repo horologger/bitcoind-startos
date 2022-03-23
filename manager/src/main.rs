@@ -1,3 +1,4 @@
+use std::os::unix::prelude::ExitStatusExt;
 use std::sync::Arc;
 use std::{borrow::Cow, sync::Mutex};
 use std::{env::var, sync::atomic::AtomicBool};
@@ -468,9 +469,14 @@ fn inner_main(reindex: bool) -> Result<(), Box<dyn Error>> {
             .map(|e| eprintln!("ERROR IN SIDECAR: {}", e));
         std::thread::sleep(sidecar_poll_interval);
     });
-    let code = child.wait()?.code().unwrap_or(0);
-
-    std::process::exit(code)
+    let exit_status = child.wait()?;
+    if let Some(code) = exit_status.code() {
+        std::process::exit(code)
+    } else if let Some(signal) = exit_status.signal() {
+        std::process::exit(signal)
+    } else {
+        std::process::exit(59)
+    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
