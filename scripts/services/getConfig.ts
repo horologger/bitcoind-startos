@@ -285,6 +285,13 @@ export const getConfig: T.ExpectedExports.getConfig = compat.getConfig({
         "integral": true,
         "units": "MiB",
       },
+      "testnet": {
+        "type": "boolean",
+        "name": "Connect to Testnet instead of Mainnet",
+        "description": 
+          "Use this if you want to experiment without using real bitcoin",
+        "default": false,
+      },
       "pruning": {
         "type": "union",
         "name": "Pruning Settings",
