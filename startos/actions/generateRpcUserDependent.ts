@@ -1,6 +1,6 @@
 import { bitcoinConfFile } from '../file-models/bitcoin.conf'
 import { sdk } from '../sdk'
-import { getRpcUsers } from '../utils'
+import { getRpcAuth, getRpcUsers } from '../utils'
 const { InputSpec, Value } = sdk
 
 export const inputSpec = InputSpec.of({
@@ -28,7 +28,7 @@ export const inputSpec = InputSpec.of({
       default: null,
       patterns: [
         {
-          regex: '.*',
+          regex: '^[A-Za-z0-9_-]+$',
           description: 'Must be alphanumeric (can contain underscore).',
         },
       ],
@@ -99,8 +99,11 @@ export const generateRpcUserDependent = sdk.Action.withInput(
     if (typeof res.stdout === 'string') {
       const newRpcAuth = res.stdout.split('\n')[1].trim().split('=')[1].trim()
 
+      const rpcAuthEntries = await getRpcAuth(effects) || []
+      rpcAuthEntries.push(newRpcAuth)
+
       bitcoinConfFile.merge({
-        rpcauth: [newRpcAuth],
+        rpcauth: rpcAuthEntries,
       })
 
       return {
